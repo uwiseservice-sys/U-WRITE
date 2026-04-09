@@ -10,12 +10,14 @@
 <body class="bg-gray-50 font-sans">
   <div class="max-w-5xl mx-auto p-6">
 
+    <!-- 英雄區 -->
     <div class="hero-bg rounded-3xl text-white p-12 text-center mb-10" style="background: linear-gradient(135deg, #008C8C 0%, #005F5F 100%);">
       <h1 class="text-5xl font-bold mb-3">UWISE Write</h1>
       <p class="text-2xl mb-6">用中文想法，AI 瞬間寫出專業英文內容</p>
     </div>
 
     <div class="bg-white rounded-3xl shadow-2xl p-8">
+      <!-- 類型選擇 -->
       <div class="grid grid-cols-4 gap-3 mb-8" id="type-buttons">
         <button onclick="selectType(0)" class="type-btn active flex flex-col items-center py-4 rounded-2xl border-2 border-teal-600 text-teal-600">📝<span class="text-sm mt-1">Blog Post</span></button>
         <button onclick="selectType(1)" class="type-btn flex flex-col items-center py-4 rounded-2xl border-2 border-gray-200 hover:border-teal-600">🛒<span class="text-sm mt-1">Product Desc</span></button>
@@ -39,6 +41,16 @@
         </div>
         <div id="output" class="bg-gray-50 border border-gray-200 rounded-3xl p-8 min-h-[260px] whitespace-pre-wrap text-gray-800"></div>
       </div>
+    </div>
+
+    <!-- Airwallex 付費卡片 -->
+    <div class="mt-8 bg-gradient-to-r from-amber-400 to-yellow-400 rounded-3xl p-8 text-center text-white">
+      <div class="text-3xl font-bold mb-2">升級 Pro 版</div>
+      <div class="text-5xl font-bold mb-1">$9 <span class="text-2xl font-normal">/月</span></div>
+      <div class="text-xl mb-6">無限生成 + 無廣告 + 歷史紀錄</div>
+      <button onclick="upgradeToPro()" class="w-full bg-white text-yellow-600 font-bold py-5 rounded-3xl text-2xl hover:scale-105 transition">
+        Airwallex 審核中 • 敬請期待
+      </button>
     </div>
 
     <div class="text-center text-sm text-gray-500 mt-8">
@@ -81,7 +93,7 @@
           method: "POST",
           headers: { 
             "Content-Type": "application/json",
-            "Authorization": "Bearer sk-ZOjwbPbuEPf4RfnRY4R7ofE35opOiFqz8SoSfBoNkg40Kox9"
+            "Authorization": "Bearer sk-dTL3CBYgBxWfHndXbYCjHuoiyVFJZIWUNJStg4iGuepfn0zj"
           },
           body: JSON.stringify({ 
             model: "deepseek-chat", 
@@ -91,12 +103,7 @@
         });
 
         const data = await res.json();
-        console.log("API Status:", res.status);
-        console.log("API Response:", data);
-
-        if (res.status === 401) {
-          outputEl.textContent = "API Key 無效或已過期，請重新複製 Key";
-        } else if (data.choices && data.choices[0] && data.choices[0].message.content) {
+        if (data.choices && data.choices[0] && data.choices[0].message.content) {
           outputEl.textContent = data.choices[0].message.content;
           remaining--;
           localStorage.setItem(key, remaining);
@@ -105,13 +112,16 @@
           outputEl.textContent = "API 返回錯誤，請稍後再試";
         }
       } catch (e) {
-        console.error("Fetch Error:", e);
         outputEl.textContent = "網路錯誤，請稍後再試";
       }
     }
 
     function copyResult() {
       navigator.clipboard.writeText(document.getElementById("output").textContent).then(() => alert("✅ 已複製！"));
+    }
+
+    function upgradeToPro() {
+      alert("Airwallex 收單功能正在審核中\n\n審核通過後即可立即付費升級");
     }
   </script>
 </body>
