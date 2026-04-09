@@ -101,13 +101,20 @@
             temperature: 0.75 
           })
         });
+
         const data = await res.json();
-        outputEl.textContent = data.choices[0].message.content;
-        remaining--;
-        localStorage.setItem(key, remaining);
-        document.getElementById("remaining").textContent = remaining;
+        if (res.status === 401) {
+          outputEl.textContent = "API Key 無效或已過期，請重新複製 Key";
+        } else if (data.choices && data.choices[0]) {
+          outputEl.textContent = data.choices[0].message.content;
+          remaining--;
+          localStorage.setItem(key, remaining);
+          document.getElementById("remaining").textContent = remaining;
+        } else {
+          outputEl.textContent = "API 返回錯誤，請稍後再試";
+        }
       } catch (e) {
-        outputEl.textContent = "生成失敗，請稍後再試";
+        outputEl.textContent = "網路錯誤，請稍後再試";
       }
     }
 
