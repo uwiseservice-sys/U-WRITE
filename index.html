@@ -65,7 +65,7 @@
     document.getElementById("remaining").textContent = remaining;
 
     let currentType = 0;
-    const types = ["部落格文章", "產品描述", "銷售信件", "社群貼文"];
+    const types = ["blog post", "product description", "sales email", "social media post"];
 
     function selectType(n) {
       currentType = n;
@@ -86,7 +86,12 @@
       outputEl.innerHTML = `<div class="flex items-center justify-center h-64"><i class="fas fa-spinner fa-spin text-4xl text-teal-600"></i></div>`;
       resultEl.classList.remove("hidden");
 
-      const prompt = `請用自然流利的英文，幫我寫一篇${types[currentType]}。主題是：${input}。請直接輸出內容，不要加任何說明。`;
+      // 加強版 prompt，強制只輸出英文
+      const prompt = `You are a professional English writer. Write a complete, natural, fluent English ${types[currentType]} about the following topic. 
+Output ONLY in English. Do not use any Chinese characters. Do not add any explanations, notes, or Chinese text. 
+Just output the full English content directly.
+
+Topic: ${input}`;
 
       try {
         const res = await fetch("https://www.dmxapi.com/v1/chat/completions", {
@@ -98,14 +103,12 @@
           body: JSON.stringify({ 
             model: "deepseek-chat", 
             messages: [{ role: "user", content: prompt }], 
-            temperature: 0.75 
+            temperature: 0.7 
           })
         });
 
         const data = await res.json();
-        if (res.status === 401) {
-          outputEl.textContent = "API Key 無效或已過期，請重新複製 Key";
-        } else if (data.choices && data.choices[0]) {
+        if (data.choices && data.choices[0]) {
           outputEl.textContent = data.choices[0].message.content;
           remaining--;
           localStorage.setItem(key, remaining);
